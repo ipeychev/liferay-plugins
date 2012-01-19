@@ -19,6 +19,7 @@
 <%
 String backURL = ParamUtil.getString(request, "backURL");
 
+boolean isMyProfile = false;
 long userId = ParamUtil.getLong(request, "userId");
 
 User user2 = null;
@@ -30,6 +31,7 @@ else {
 	user2 = (User)request.getAttribute(WebKeys.CONTACTS_USER);
 }
 
+isMyProfile = (user2.getUserId() == themeDisplay.getUser().getUserId());
 user2 = user2.toEscapedModel();
 
 request.setAttribute("view_user.jsp-user", user2);
@@ -38,30 +40,6 @@ request.setAttribute("view_user.jsp-user", user2);
 <c:if test="<%= user2 != null %>">
 	<div class="contacts-profile">
 		<c:if test="<%= (displayStyle == ContactsConstants.DISPLAY_STYLE_BASIC) || (displayStyle ==ContactsConstants.DISPLAY_STYLE_FULL) %>">
-			<div class="lfr-contact-grid-item">
-				<c:if test="<%= showIcon %>">
-					<div class="lfr-contact-thumb">
-						<a href="<%= user2.getDisplayURL(themeDisplay) %>"><img alt="<%= HtmlUtil.escape(user2.getFullName()) %>" src="<%= user2.getPortraitURL(themeDisplay) %>" /></a>
-					</div>
-				</c:if>
-
-				<div class="<%= showIcon ? StringPool.BLANK : "no-icon" %> lfr-contact-info">
-					<div class="lfr-contact-name">
-						<a href="<%= user2.getDisplayURL(themeDisplay) %>"><%= HtmlUtil.escape(user2.getFullName()) %></a>
-					</div>
-
-					<div class="lfr-contact-job-title">
-						<%= HtmlUtil.escape(user2.getJobTitle()) %>
-					</div>
-
-					<div class="lfr-contact-extra">
-						<%= HtmlUtil.escape(user2.getEmailAddress()) %>
-					</div>
-				</div>
-
-				<div class="clear"><!-- --></div>
-			</div>
-
 			<aui:layout cssClass="social-relations">
 
 				<%
@@ -96,6 +74,30 @@ request.setAttribute("view_user.jsp-user", user2);
 					<liferay-util:include page="/contacts_center/user_toolbar.jsp" servletContext="<%= application %>" />
 				</aui:layout>
 			</aui:layout>
+			
+			<div class="lfr-contact-grid-item">
+				<c:if test="<%= showIcon %>">
+					<div class="lfr-contact-thumb">
+						<a href="<%= user2.getDisplayURL(themeDisplay) %>"><img alt="<%= HtmlUtil.escape(user2.getFullName()) %>" src="<%= user2.getPortraitURL(themeDisplay) %>" /></a>
+					</div>
+				</c:if>
+
+				<div class="<%= showIcon ? StringPool.BLANK : "no-icon" %> lfr-contact-info">
+					<div class="lfr-contact-name">
+						<a href="<%= user2.getDisplayURL(themeDisplay) %>"><%= HtmlUtil.escape(user2.getFullName()) %></a>
+					</div>
+
+					<div class="lfr-contact-job-title">
+						<liferay-ui:message key="job-title" />: <div class="quick-edit-field" id="editable-job-title"><%= HtmlUtil.escape(user2.getJobTitle()) %></div>
+					</div>
+
+					<div class="lfr-contact-extra">
+						<liferay-ui:message key="email-address" />: <div class="quick-edit-field" id="editable-email-address"><%= HtmlUtil.escape(user2.getEmailAddress()) %></div>
+					</div>
+				</div>
+
+				<div class="clear"><!-- --></div>
+			</div>
 		</c:if>
 
 		<c:if test="<%= ((displayStyle == ContactsConstants.DISPLAY_STYLE_DETAIL) || (displayStyle ==ContactsConstants.DISPLAY_STYLE_FULL)) && UserPermissionUtil.contains(permissionChecker, user2.getUserId(), ActionKeys.VIEW) %>">
@@ -261,4 +263,41 @@ request.setAttribute("view_user.jsp-user", user2);
 			</c:if>
 		</c:if>
 	</div>
+</c:if>
+
+<c:if test="<%= isMyProfile %>">
+	<aui:script use="aui-editable,aui-io-request">
+		
+		A.all('#p_p_id<portlet:namespace /> .quick-edit-field').each(
+			function(node) {
+				var id = node.get('id');
+								
+				new A.Editable(
+				{
+					node: '#' + id,
+					on: {
+						contentTextChange: function(event) {
+							var newValue = String(event.newVal);
+							var oldValue = String(event.prevVal);
+							var fieldName = id;
+
+							if (!event.initial) {
+								if (oldValue !== newValue) {
+									A.io.request(
+										'<portlet:actionURL name="saveUserField" />',
+										{
+											data: {
+												fieldName: fieldName,
+												value: newValue
+											}
+										}
+									);
+								}
+							}
+						}
+					}
+				});	
+			}	
+		);
+	</aui:script>
 </c:if>

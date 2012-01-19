@@ -266,6 +266,48 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		sendNotificationEvent(socialRequest, themeDisplay);
 	}
 
+	public void saveUserField(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+	
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+		
+		User user = themeDisplay.getUser();
+		
+		String fieldName = ParamUtil.getString(actionRequest, "fieldName");
+		String newValue = ParamUtil.getString(actionRequest, "value");
+
+		fieldName = fieldName.replace("editable-", "");
+		
+		if ("aim".equals(fieldName)) {
+			user.getContact().setAimSn(newValue);
+		}
+		else if ("email-address".equals(fieldName)) {
+			user.setEmailAddress(newValue);
+		}
+		else if ("icq".equals(fieldName)) {
+			user.getContact().setIcqSn(newValue);
+		}
+		else if ("jabber".equals(fieldName)) {
+			user.getContact().setJabberSn(newValue);
+		}
+		else if ("job-title".equals(fieldName)) {
+			user.setJobTitle(newValue);
+		}
+		else if ("msn".equals(fieldName)) {
+			user.getContact().setMsnSn(newValue);
+		}
+		else if ("skype".equals(fieldName)) {
+			user.getContact().setSkypeSn(newValue);
+		}
+		else if ("ym".equals(fieldName)) {
+			user.getContact().setYmSn(newValue);
+		}
+		
+		UserLocalServiceUtil.updateUser(user, true);
+	}
+	
 	@Override
 	public void serveResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
