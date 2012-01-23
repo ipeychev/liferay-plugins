@@ -298,7 +298,7 @@ request.setAttribute("view_user.jsp-user", user2);
 													updateMessage('<%= UnicodeLanguageUtil.get(pageContext, "your-request-failed-to-complete") %>', 'error');
 												},
 												success: function(event, id, obj) {
-													updateMessage('<%= UnicodeLanguageUtil.get(pageContext, "field-saved") %>', 'success');
+													updateMessage('<%= UnicodeLanguageUtil.get(pageContext, "the-field-has-been-saved-successfully") %>', 'success');
 												}
 											},
 											data: {

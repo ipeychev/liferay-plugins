@@ -107,7 +107,7 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="aimS" /></span>
 
-					<div class="quick-edit-field" id="editable-aimSn">
+					<div class="quick-edit-field" id="editable-contact_aimSn">
 						<%= HtmlUtil.escape(aim) %>
 					</div>
 				</li>
@@ -117,7 +117,7 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="icq" /></span>
 
-					<div class="quick-edit-field" id="editable-icqSn">
+					<div class="quick-edit-field" id="editable-contact_icqSn">
 						<%= HtmlUtil.escape(icq) %>
 					</div>
 					
@@ -129,7 +129,7 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="jabber" /></span>
 
-					<div class="quick-edit-field" id="editable-jabberSn">
+					<div class="quick-edit-field" id="editable-contact_jabberSn">
 						<%= HtmlUtil.escape(jabber) %>
 					</div>
 				</li>
@@ -139,7 +139,7 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="msn" /></span>
 
-					<div class="quick-edit-field" id="editable-msnSn">
+					<div class="quick-edit-field" id="editable-contact_msnSn">
 						<%= HtmlUtil.escape(msn) %>
 					</div>
 				</li>
@@ -149,7 +149,7 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="skype" /></span>
 
-					<div class="quick-edit-field" id="editable-skypeSn">
+					<div class="quick-edit-field" id="editable-contact_skypeSn">
 						<%= HtmlUtil.escape(skype) %>
 					</div>
 				</li>
@@ -159,7 +159,7 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="ym" /></span>
 
-					<div class="quick-edit-field" id="editable-ymSn">
+					<div class="quick-edit-field" id="editable-contact_ymSn">
 						<%= HtmlUtil.escape(ym) %>
 					</div>
 					
@@ -271,7 +271,7 @@ String twitter = contact2.getTwitterSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="facebook" /></span>
 
-					<div class="quick-edit-field" id="editable-facebookSn">
+					<div class="quick-edit-field" id="editable-contact_facebookSn">
 						<%= HtmlUtil.escape(facebook) %>
 					</div>
 				</li>
@@ -281,7 +281,7 @@ String twitter = contact2.getTwitterSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="myspace" /></span>
 
-					<div class="quick-edit-field" id="editable-myspaceSn">
+					<div class="quick-edit-field" id="editable-contact_myspaceSn">
 						<%= HtmlUtil.escape(mySpace) %>
 					</div>
 				</li>
@@ -291,7 +291,7 @@ String twitter = contact2.getTwitterSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="twitter" /></span>
 
-					<div class="quick-edit-field" id="editable-twitterSn">
+					<div class="quick-edit-field" id="editable-contact_twitterSn">
 						<%= HtmlUtil.escape(twitter) %>
 					</div>
 				</li>

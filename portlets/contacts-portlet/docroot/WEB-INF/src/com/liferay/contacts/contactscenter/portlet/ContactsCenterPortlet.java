@@ -287,30 +287,37 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 		fieldName = fieldName.replace("editable-", "");
 		
-		if ("aimSn".equals(fieldName)) {
+		if ("contact_aimSn".equals(fieldName)) {
 			user.getContact().setAimSn(newValue);
 		}
-		else if ("email-address".equals(fieldName)) {
-			user.setEmailAddress(newValue);
+		else if ("contact_facebookSn".equals(fieldName)) {
+			user.getContact().setFacebookSn(newValue);
 		}
 		else if ("contact_icqSn".equals(fieldName)) {
 			user.getContact().setIcqSn(newValue);
 		}
-		else if ("jabber".equals(fieldName)) {
+		else if ("contact_jabberSn".equals(fieldName)) {
 			user.getContact().setJabberSn(newValue);
 		}
-		else if ("job-title".equals(fieldName)) {
-			user.setJobTitle(newValue);
-		}
-		else if ("msn".equals(fieldName)) {
+		else if ("contact_msnSn".equals(fieldName)) {
 			user.getContact().setMsnSn(newValue);
 		}
-		else if ("skype".equals(fieldName)) {
+		else if ("contact_skypeSn".equals(fieldName)) {
 			user.getContact().setSkypeSn(newValue);
 		}
-		else if ("ym".equals(fieldName)) {
+		else if ("contact_twitterSn".equals(fieldName)) {
+			user.getContact().setTwitterSn(newValue);
+		}
+		else if ("contact_ymSn".equals(fieldName)) {
 			user.getContact().setYmSn(newValue);
 		}
+		else if ("emailAddress".equals(fieldName)) {
+			user.setEmailAddress(newValue);
+		}
+		else if ("jobTitle".equals(fieldName)) {
+			user.setJobTitle(newValue);
+		}
+		
 		
 		Calendar cal = CalendarFactoryUtil.getCalendar();
 		cal.setTime(user.getBirthday());
@@ -322,32 +329,25 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		List<UserGroupRole> userGroupRoles = 
 			UserGroupRoleLocalServiceUtil.getUserGroupRoles(user.getUserId());
 		
-		try {
-			user = UserServiceUtil.updateUser(
-				user.getUserId(), user.getPasswordUnencrypted(), 
-				user.getPasswordUnencrypted(), user.getPasswordUnencrypted(),
-				user.getPasswordReset(), user.getReminderQueryQuestion(),
-				user.getReminderQueryAnswer(), user.getScreenName(), 
-				user.getEmailAddress(), user.getFacebookId(), user.getOpenId(),
-				user.getLanguageId(), user.getTimeZoneId(), user.getGreeting(),
-				user.getComments(), user.getFirstName(), user.getMiddleName(), 
-				user.getLastName(), user.getContact().getPrefixId(), 
-				user.getContact().getSuffixId(), user.isMale(), birthdayMonth, 
-				birthdayDay, birthdayYear, user.getContact().getSmsSn(), 
-				user.getContact().getAimSn(), user.getContact().getFacebookSn(),
-				user.getContact().getIcqSn(), user.getContact().getJabberSn(),
-				user.getContact().getMsnSn(), user.getContact().getMySpaceSn(),
-				user.getContact().getSkypeSn(), user.getContact().getTwitterSn(),
-				user.getContact().getYmSn(), user.getJobTitle(), user.getGroupIds(),
-				user.getOrganizationIds(), user.getRoleIds(), 
-				userGroupRoles, user.getUserGroupIds(), new ServiceContext());
-		} catch (PortalException pe) {
-			pe.printStackTrace();
-		} catch (SystemException se) {
-			se.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		user = UserServiceUtil.updateUser(
+			user.getUserId(), user.getPasswordUnencrypted(), 
+			user.getPasswordUnencrypted(), user.getPasswordUnencrypted(),
+			user.getPasswordReset(), user.getReminderQueryQuestion(),
+			user.getReminderQueryAnswer(), user.getScreenName(), 
+			user.getEmailAddress(), user.getFacebookId(), user.getOpenId(),
+			user.getLanguageId(), user.getTimeZoneId(), user.getGreeting(),
+			user.getComments(), user.getFirstName(), user.getMiddleName(), 
+			user.getLastName(), user.getContact().getPrefixId(), 
+			user.getContact().getSuffixId(), user.isMale(), birthdayMonth, 
+			birthdayDay, birthdayYear, user.getContact().getSmsSn(), 
+			user.getContact().getAimSn(), user.getContact().getFacebookSn(),
+			user.getContact().getIcqSn(), user.getContact().getJabberSn(),
+			user.getContact().getMsnSn(), user.getContact().getMySpaceSn(),
+			user.getContact().getSkypeSn(), 
+			user.getContact().getTwitterSn(), user.getContact().getYmSn(),
+			user.getJobTitle(), user.getGroupIds(), 
+			user.getOrganizationIds(), user.getRoleIds(), 
+			userGroupRoles, user.getUserGroupIds(), new ServiceContext());
 	}
 	
 	@Override
