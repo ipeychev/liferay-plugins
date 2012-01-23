@@ -14,6 +14,19 @@
 
 package com.liferay.contacts.contactscenter.portlet;
 
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.PortletURL;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.liferay.contacts.util.ContactsUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -25,6 +38,7 @@ import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -32,7 +46,11 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.User;
+import com.liferay.portal.model.UserGroupRole;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.UserServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.comparator.UserLastNameComparator;
@@ -44,19 +62,6 @@ import com.liferay.portlet.social.service.SocialRelationLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialRequestInterpreterLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialRequestLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Ryan Park
@@ -266,6 +271,83 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		sendNotificationEvent(socialRequest, themeDisplay);
 	}
 
+	public void saveUserField(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+	
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+		
+		User user = themeDisplay.getUser();
+		
+		String fieldName = ParamUtil.getString(actionRequest, "fieldName");
+		String newValue = ParamUtil.getString(actionRequest, "value");
+
+		fieldName = fieldName.replace("editable-", "");
+		
+		if ("contact_aimSn".equals(fieldName)) {
+			user.getContact().setAimSn(newValue);
+		}
+		else if ("contact_facebookSn".equals(fieldName)) {
+			user.getContact().setFacebookSn(newValue);
+		}
+		else if ("contact_icqSn".equals(fieldName)) {
+			user.getContact().setIcqSn(newValue);
+		}
+		else if ("contact_jabberSn".equals(fieldName)) {
+			user.getContact().setJabberSn(newValue);
+		}
+		else if ("contact_msnSn".equals(fieldName)) {
+			user.getContact().setMsnSn(newValue);
+		}
+		else if ("contact_skypeSn".equals(fieldName)) {
+			user.getContact().setSkypeSn(newValue);
+		}
+		else if ("contact_twitterSn".equals(fieldName)) {
+			user.getContact().setTwitterSn(newValue);
+		}
+		else if ("contact_ymSn".equals(fieldName)) {
+			user.getContact().setYmSn(newValue);
+		}
+		else if ("emailAddress".equals(fieldName)) {
+			user.setEmailAddress(newValue);
+		}
+		else if ("jobTitle".equals(fieldName)) {
+			user.setJobTitle(newValue);
+		}
+		
+		
+		Calendar cal = CalendarFactoryUtil.getCalendar();
+		cal.setTime(user.getBirthday());
+		
+		int birthdayDay = cal.get(Calendar.DATE);
+		int birthdayMonth = cal.get(Calendar.MONTH);
+		int birthdayYear = cal.get(Calendar.YEAR);
+		
+		List<UserGroupRole> userGroupRoles = 
+			UserGroupRoleLocalServiceUtil.getUserGroupRoles(user.getUserId());
+		
+		user = UserServiceUtil.updateUser(
+			user.getUserId(), user.getPasswordUnencrypted(), 
+			user.getPasswordUnencrypted(), user.getPasswordUnencrypted(),
+			user.getPasswordReset(), user.getReminderQueryQuestion(),
+			user.getReminderQueryAnswer(), user.getScreenName(), 
+			user.getEmailAddress(), user.getFacebookId(), user.getOpenId(),
+			user.getLanguageId(), user.getTimeZoneId(), user.getGreeting(),
+			user.getComments(), user.getFirstName(), user.getMiddleName(), 
+			user.getLastName(), user.getContact().getPrefixId(), 
+			user.getContact().getSuffixId(), user.isMale(), birthdayMonth, 
+			birthdayDay, birthdayYear, user.getContact().getSmsSn(), 
+			user.getContact().getAimSn(), user.getContact().getFacebookSn(),
+			user.getContact().getIcqSn(), user.getContact().getJabberSn(),
+			user.getContact().getMsnSn(), user.getContact().getMySpaceSn(),
+			user.getContact().getSkypeSn(), 
+			user.getContact().getTwitterSn(), user.getContact().getYmSn(),
+			user.getJobTitle(), user.getGroupIds(), 
+			user.getOrganizationIds(), user.getRoleIds(), 
+			userGroupRoles, user.getUserGroupIds(), new ServiceContext());
+	}
+	
 	@Override
 	public void serveResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)

@@ -5,6 +5,10 @@ $section-header-bg: #CCE6F7;
 	padding: 0;
 }
 
+div.aui-editable {
+	z-index: 100;
+}
+
 .contacts-portlet {
 	.clear {
 		clear: both;

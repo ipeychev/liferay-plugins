@@ -107,7 +107,9 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="aim" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(aim) %></span>
+					<div class="quick-edit-field" id="editable-aimSn">
+						<%= HtmlUtil.escape(aim) %>
+					</div>
 				</li>
 			</c:if>
 
@@ -115,8 +117,10 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="icq" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(icq) %></span>
-
+					<div class="quick-edit-field" id="editable-icqSn">
+						<%= HtmlUtil.escape(icq) %>
+					</div>
+					
 					<img alt="" class="instant-messenger-logo" src="http://web.icq.com/whitepages/online?icq=<%= HtmlUtil.escapeAttribute(icq) %>&img=5" />
 				</li>
 			</c:if>
@@ -125,7 +129,9 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="jabber" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(jabber) %></span>
+					<div class="quick-edit-field" id="editable-jabberSn">
+						<%= HtmlUtil.escape(jabber) %>
+					</div>
 				</li>
 			</c:if>
 
@@ -133,7 +139,9 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="msn" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(msn) %></span>
+					<div class="quick-edit-field" id="editable-msnSn">
+						<%= HtmlUtil.escape(msn) %>
+					</div>
 				</li>
 			</c:if>
 
@@ -141,7 +149,9 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="skype" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(skype) %></span>
+					<div class="quick-edit-field" id="editable-skypeSn">
+						<%= HtmlUtil.escape(skype) %>
+					</div>
 				</li>
 			</c:if>
 
@@ -149,8 +159,10 @@ String ym = contact2.getYmSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="ym" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(ym) %></span>
-
+					<div class="quick-edit-field" id="editable-ymSn">
+						<%= HtmlUtil.escape(ym) %>
+					</div>
+					
 					<img alt="" class="instant-messenger-logo" src="http://opi.yahoo.com/online?u=<%= HtmlUtil.escapeAttribute(ym) %>&m=g&t=0" />
 				</li>
 			</c:if>
@@ -259,7 +271,9 @@ String twitter = contact2.getTwitterSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="facebook" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(facebook) %></span>
+					<div class="quick-edit-field" id="editable-facebookSn">
+						<%= HtmlUtil.escape(facebook) %>
+					</div>
 				</li>
 			</c:if>
 
@@ -267,7 +281,9 @@ String twitter = contact2.getTwitterSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="myspace" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(mySpace) %></span>
+					<div class="quick-edit-field" id="editable-myspaceSn">
+						<%= HtmlUtil.escape(mySpace) %>
+					</div>
 				</li>
 			</c:if>
 
@@ -275,7 +291,9 @@ String twitter = contact2.getTwitterSn();
 				<li>
 					<span class="property-type"><liferay-ui:message key="twitter" /></span>
 
-					<span class="property"><%= HtmlUtil.escape(twitter) %></span>
+					<div class="quick-edit-field" id="editable-twitterSn">
+						<%= HtmlUtil.escape(twitter) %>
+					</div>
 				</li>
 			</c:if>
 		</dl>
