@@ -25,8 +25,11 @@ import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
@@ -44,6 +47,8 @@ import com.liferay.portlet.social.service.SocialRelationLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialRequestInterpreterLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialRequestLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
+
+import java.io.IOException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,42 +76,72 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long userId = ParamUtil.getLong(actionRequest, "userId");
+		long curUserId = ParamUtil.getLong(actionRequest, "userId", 0);
+
+		long[] userIds = null;
+
+		if (curUserId > 0) {
+			userIds = new long[] {curUserId};
+		}
+		else {
+			userIds = StringUtil.split(
+				ParamUtil.getString(actionRequest, "userIds"), 0L);
+		}
+
 		int type = ParamUtil.getInteger(actionRequest, "type");
 
-		boolean blocked = SocialRelationLocalServiceUtil.hasRelation(
-			userId, themeDisplay.getUserId(),
-			SocialRelationConstants.TYPE_UNI_ENEMY);
+		for (long userId : userIds) {
+			if (userId != themeDisplay.getUserId()) {
+				boolean blocked = SocialRelationLocalServiceUtil.hasRelation(
+					userId, themeDisplay.getUserId(),
+					SocialRelationConstants.TYPE_UNI_ENEMY);
 
-		if (type == SocialRelationConstants.TYPE_UNI_ENEMY) {
-			SocialRelationLocalServiceUtil.deleteRelations(
-				themeDisplay.getUserId(), userId);
-		}
-		else if (blocked) {
-			return;
-		}
+				if (type == SocialRelationConstants.TYPE_UNI_ENEMY) {
+					SocialRelationLocalServiceUtil.deleteRelations(
+						themeDisplay.getUserId(), userId);
+				}
+				else if (blocked) {
+					continue;
+				}
 
-		SocialRelationLocalServiceUtil.addRelation(
-			themeDisplay.getUserId(), userId, type);
+				SocialRelationLocalServiceUtil.addRelation(
+					themeDisplay.getUserId(), userId, type);
 
-		if (blocked) {
-			SocialRelationLocalServiceUtil.addRelation(
-				userId, themeDisplay.getUserId(), type);
+				if (blocked) {
+					SocialRelationLocalServiceUtil.addRelation(
+						userId, themeDisplay.getUserId(), type);
+				}
+			}
 		}
 	}
 
 	public void deleteSocialRelation(
-			ActionRequest actionRequest, ActionResponse actionResponse)
+		ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long userId = ParamUtil.getLong(actionRequest, "userId");
+		long curUserId = ParamUtil.getLong(actionRequest, "userId", 0);
+
+		long[] userIds = null;
+
+		if (curUserId > 0) {
+			userIds = new long[] {curUserId};
+		}
+		else {
+			userIds = StringUtil.split(
+				ParamUtil.getString(actionRequest, "userIds"), 0L);
+		}
+
 		int type = ParamUtil.getInteger(actionRequest, "type");
 
-		SocialRelationLocalServiceUtil.deleteRelation(
-			themeDisplay.getUserId(), userId, type);
+		for (long userId : userIds) {
+			if (userId != themeDisplay.getUserId()) {
+				SocialRelationLocalServiceUtil.deleteRelation(
+					themeDisplay.getUserId(), userId, type);
+			}
+		}
 	}
 
 	public void exportVCard(
@@ -151,6 +186,47 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		ServletResponseUtil.sendFile(
 			request, response, "vcards.vcf",
 			vCards.getBytes(StringPool.UTF8), "text/x-vcard; charset=UTF-8");
+	}
+
+	public void getContact(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws Exception {
+
+		long userId = ParamUtil.getLong(resourceRequest, "userId");
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		User user = UserLocalServiceUtil.getUser(userId);
+
+		LiferayPortletResponse liferayPortletResponse =
+			(LiferayPortletResponse)resourceResponse;
+
+		JSONObject userJSONObject = JSONFactoryUtil.createJSONObject();
+
+		userJSONObject.put("emailAddress", user.getEmailAddress());
+		userJSONObject.put("jobTitle", user.getJobTitle());
+		userJSONObject.put("firstName", user.getFirstName());
+		userJSONObject.put("fullName", user.getFullName());
+		userJSONObject.put("lastName", user.getLastName());
+		userJSONObject.put("portraitURL", user.getPortraitURL(themeDisplay));
+		userJSONObject.put("userId", user.getUserId());
+
+		PortletURL viewSummaryURL = liferayPortletResponse.createRenderURL();
+
+		viewSummaryURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+		viewSummaryURL.setParameter(
+			"mvcPath", "/contacts_center/view_resources.jsp");
+		viewSummaryURL.setParameter("userId", String.valueOf(user.getUserId()));
+
+		userJSONObject.put("viewSummaryURL", viewSummaryURL.toString());
+
+		jsonObject.put("user", userJSONObject);
+
+		writeJSON(resourceRequest, resourceResponse, jsonObject);
 	}
 
 	public void getContacts(
@@ -218,9 +294,11 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			userJSONObject.put("emailAddress", user.getEmailAddress());
 			userJSONObject.put("jobTitle", user.getJobTitle());
 			userJSONObject.put("firstName", user.getFirstName());
+			userJSONObject.put("fullName", user.getFullName());
 			userJSONObject.put("lastName", user.getLastName());
 			userJSONObject.put(
 				"portraitURL", user.getPortraitURL(themeDisplay));
+			userJSONObject.put("userId", String.valueOf(user.getUserId()));
 
 			PortletURL viewSummaryURL =
 				liferayPortletResponse.createRenderURL();
@@ -228,7 +306,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			viewSummaryURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
 			viewSummaryURL.setParameter(
-				"mvcPath", "/contacts_center/view_user.jsp");
+				"mvcPath", "/contacts_center/view_resources.jsp");
 			viewSummaryURL.setParameter(
 				"userId", String.valueOf(user.getUserId()));
 
@@ -249,21 +327,38 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long userId = ParamUtil.getLong(actionRequest, "userId");
-		int type = ParamUtil.getInteger(actionRequest, "type");
+		long curUserId = ParamUtil.getLong(actionRequest, "userId", 0);
 
-		if (SocialRelationLocalServiceUtil.hasRelation(
-				userId, themeDisplay.getUserId(),
-				SocialRelationConstants.TYPE_UNI_ENEMY)) {
+		long[] userIds = null;
 
-			return;
+		if (curUserId > 0) {
+			userIds = new long[] {curUserId};
+		}
+		else {
+			userIds = StringUtil.split(
+				ParamUtil.getString(actionRequest, "userIds"), 0L);
 		}
 
-		SocialRequest socialRequest = SocialRequestLocalServiceUtil.addRequest(
-			themeDisplay.getUserId(), 0, User.class.getName(),
-			themeDisplay.getUserId(), type, StringPool.BLANK, userId);
+		int type = ParamUtil.getInteger(actionRequest, "type");
 
-		sendNotificationEvent(socialRequest, themeDisplay);
+		for (long userId : userIds) {
+			if (userId != themeDisplay.getUserId()) {
+				if (SocialRelationLocalServiceUtil.hasRelation(
+					userId, themeDisplay.getUserId(),
+					SocialRelationConstants.TYPE_UNI_ENEMY)) {
+
+					continue;
+				}
+
+				SocialRequest socialRequest =
+					SocialRequestLocalServiceUtil.addRequest(
+						themeDisplay.getUserId(), 0, User.class.getName(),
+						themeDisplay.getUserId(), type,
+						StringPool.BLANK, userId);
+
+				sendNotificationEvent(socialRequest, themeDisplay);
+			}
+		}
 	}
 
 	@Override
@@ -280,6 +375,9 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			else if (id.equals("exportVCards")) {
 				exportVCards(resourceRequest, resourceResponse);
 			}
+			else if (id.equals("getContact")) {
+				getContact(resourceRequest, resourceResponse);
+			}
 			else if (id.equals("getContacts")) {
 				getContacts(resourceRequest, resourceResponse);
 			}
@@ -290,6 +388,30 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		catch (Exception e) {
 			throw new PortletException(e);
 		}
+	}
+
+	public void processAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException, PortletException {
+
+		try {
+			String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
+			if (cmd.equals("addSocialRelation")) {
+				addSocialRelation(actionRequest, actionResponse);
+			}
+			else if (cmd.equals("deleteSocialRelation")) {
+				deleteSocialRelation(actionRequest, actionResponse);
+			}
+			else if (cmd.equals("requestSocialRelation")) {
+				requestSocialRelation(actionRequest, actionResponse);
+			}
+		}
+		catch (Exception e) {
+
+		}
+
+		sendRedirect(actionRequest, actionResponse);
 	}
 
 	public void updateSocialRequest(
