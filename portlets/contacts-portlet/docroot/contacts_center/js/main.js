@@ -33,13 +33,53 @@ AUI().use(
 	'json-parse',
 	'liferay-contacts-result',
 	function(A) {
+		var numSelectedContacts = 0;
+
 		Liferay.namespace('Contacts');
 
 		Liferay.Contacts = {
 			init: function(config) {
 				var instance = this;
+				
+				instance._namespace = A.namespace;
 
 				instance._createContactList(config);
+			},
+
+			addContactResult: function(responseData, toolBarURL) {
+				var instance = this;
+
+				var data = A.JSON.parse(responseData);
+
+				var buffer = instance._renderContact(data);
+
+				var contactResultContent = A.one('.contacts-portlet .contacts-container-content');
+
+				if (contactResultContent) {
+					if (numSelectedContacts <= 0) {
+						contactResultContent.html(buffer);
+
+						var toolbarButtons = A.one('#toolbarButtons');
+
+						if (!toolbarButtons.io) {
+							toolbarButtons.plug(
+								A.Plugin.IO,
+								{
+									autoLoad: false
+								}
+							);
+						}
+
+						toolbarButtons.io.set('uri', toolBarURL);
+
+						toolbarButtons.io.start();
+					}
+					else {
+						contactResultContent.append(buffer);
+					}
+
+					numSelectedContacts++;
+				}
 			},
 
 			createDataSource: function(url) {
@@ -71,6 +111,32 @@ AUI().use(
 						source: url
 					}
 				)
+			},
+
+			clearContactResult: function() {
+				var contactResultContent = A.one('.contacts-portlet .contacts-container-content');
+
+				contactResultContent.html('');
+
+				A.all('.lfr-contact .lfr-contact-checkbox input').each(
+					function(item) {
+						if (item) {
+							item.set('checked', false);
+						}
+					}
+				);
+
+				numSelectedContacts = 0;
+			},
+
+			deleteContactResult: function(userId) {
+				var user = A.one('#user-' + userId);
+
+				if (user) {
+					user.remove(true);
+
+					numSelectedContacts--;
+				}
 			},
 
 			getRequestTemplate: function(socialRelationType) {
@@ -136,7 +202,45 @@ AUI().use(
 				instance._contactList = contactsResult;
 			},
 
+			_renderContact: function(data) {
+				var user = data.user;
+
+				var userTemplate =
+					'<div class="lfr-contact-grid-item" id="user-{userId}">' +
+						'<input type="hidden" value="{userId}" name="selected-user-{userId}" />' +
+						'<div class="lfr-contact-thumb">' +
+							'<img alt="{fullName}" src="{portraitURL}" />' +
+						'</div>' +
+						'<div class="lfr-contact-info">' +
+							'<div class="lfr-contact-name">' +
+								'<a>{lastName} {firstName}</a>' +
+							'</div>' +
+							'<div class="lfr-contact-extra">' +
+								'{emailAddress}' +
+							'</div>' +
+						'</div>' +
+						'<div class="clear"></div>' +
+					'</div>';
+
+				var buffer =
+					A.Lang.sub(
+						userTemplate,
+						{
+							emailAddress: (user.emailAddress ? user.emailAddress : ''),
+							firstName: (user.firstName ? user.firstName : ''),
+							fullName: (user.fullName ? user.fullName : ''),
+							lastName: (user.lastName ? user.lastName + ',' : ''),
+							portraitURL: (user.portraitURL ? user.portraitURL : ''),
+							userId: user.userId
+						}
+					);
+
+				return buffer;
+			},
+
 			_renderResult: function(data, displayMessage, lastNameAnchor) {
+				var instance = this;
+
 				var results = data.users;
 				var count = data.count;
 
@@ -150,21 +254,35 @@ AUI().use(
 					);
 				}
 				else {
+
+					var selectedUsersNodes = A.all('.lfr-contact-grid-item input');
+
+					var selectedUsersIds = [];
+
+					if (selectedUsersNodes.size() > 0) {
+						selectedUsersIds = selectedUsersNodes.val();
+					}
+
 					var userTemplate =
 						'{lastNameAnchor}' +
-						'<div class="lfr-contact-grid-item" data-viewSummaryURL="{viewSummaryURL}">' +
-							'<div class="lfr-contact-thumb">' +
-								'<img alt="{fullName}" src="{portraitURL}" />' +
+						'<div class="lfr-contact">' +
+							'<div class="lfr-contact-checkbox">' +
+								'<input type="checkbox" value="{userId}" {checked} name="contact-ids-{userId}" class="contact-ids" label="" />' +
 							'</div>' +
-							'<div class="lfr-contact-info">' +
-								'<div class="lfr-contact-name">' +
-									'<a>{lastName} {firstName}</a>' +
+							'<div class="lfr-contact-grid-item" data-viewSummaryURL="{viewSummaryURL}" data-userId="{userId}">' +
+								'<div class="lfr-contact-thumb">' +
+									'<img alt="{fullName}" src="{portraitURL}" />' +
 								'</div>' +
-								'<div class="lfr-contact-extra">' +
-									'{emailAddress}' +
+								'<div class="lfr-contact-info">' +
+									'<div class="lfr-contact-name">' +
+										'<a>{lastName} {firstName}</a>' +
+									'</div>' +
+									'<div class="lfr-contact-extra">' +
+										'{emailAddress}' +
+									'</div>' +
 								'</div>' +
+								'<div class="clear"></div>' +
 							'</div>' +
-							'<div class="clear"></div>' +
 						'</div>';
 
 					buffer.push(
@@ -191,11 +309,15 @@ AUI().use(
 								return A.Lang.sub(
 									userTemplate,
 									{
+										checked: ((A.Array.indexOf(selectedUsersIds, result.userId) != -1) ? 'checked="true"' : ''),
 										emailAddress: (result.emailAddress ? result.emailAddress : ''),
 										lastNameAnchor: (displayLastNameAnchor ? '<div class="lastNameAnchor"><a>' + lastNameAnchor + '</a></div>' : ''),
 										firstName: (result.firstName ? result.firstName : ''),
+										fullName: (result.fullName ? result.fullName : ''),
 										lastName: (result.lastName ? result.lastName + ',' : ''),
+										namespace: instance._namespace,
 										portraitURL: (result.portraitURL ? result.portraitURL : ''),
+										userId: result.userId,
 										viewSummaryURL: (result.viewSummaryURL ? result.viewSummaryURL : '')
 									}
 								);
