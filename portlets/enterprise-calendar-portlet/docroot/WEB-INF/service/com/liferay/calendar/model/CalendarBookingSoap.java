@@ -47,14 +47,11 @@ public class CalendarBookingSoap implements Serializable {
 		soapModel.setLocation(model.getLocation());
 		soapModel.setType(model.getType());
 		soapModel.setStartDate(model.getStartDate());
-		soapModel.setStartTimeZone(model.getStartTimeZone());
 		soapModel.setEndDate(model.getEndDate());
-		soapModel.setEndDateTimeZone(model.getEndDateTimeZone());
 		soapModel.setAllDay(model.getAllDay());
 		soapModel.setRecurrence(model.getRecurrence());
 		soapModel.setPriority(model.getPriority());
 		soapModel.setOutOfOffice(model.getOutOfOffice());
-		soapModel.setRemindBy(model.getRemindBy());
 		soapModel.setFirstReminder(model.getFirstReminder());
 		soapModel.setSecondReminder(model.getSecondReminder());
 		soapModel.setRequired(model.getRequired());
@@ -246,28 +243,12 @@ public class CalendarBookingSoap implements Serializable {
 		_startDate = startDate;
 	}
 
-	public String getStartTimeZone() {
-		return _startTimeZone;
-	}
-
-	public void setStartTimeZone(String startTimeZone) {
-		_startTimeZone = startTimeZone;
-	}
-
 	public Date getEndDate() {
 		return _endDate;
 	}
 
 	public void setEndDate(Date endDate) {
 		_endDate = endDate;
-	}
-
-	public String getEndDateTimeZone() {
-		return _endDateTimeZone;
-	}
-
-	public void setEndDateTimeZone(String endDateTimeZone) {
-		_endDateTimeZone = endDateTimeZone;
 	}
 
 	public boolean getAllDay() {
@@ -308,14 +289,6 @@ public class CalendarBookingSoap implements Serializable {
 
 	public void setOutOfOffice(boolean outOfOffice) {
 		_outOfOffice = outOfOffice;
-	}
-
-	public int getRemindBy() {
-		return _remindBy;
-	}
-
-	public void setRemindBy(int remindBy) {
-		_remindBy = remindBy;
 	}
 
 	public int getFirstReminder() {
@@ -410,14 +383,11 @@ public class CalendarBookingSoap implements Serializable {
 	private String _location;
 	private String _type;
 	private Date _startDate;
-	private String _startTimeZone;
 	private Date _endDate;
-	private String _endDateTimeZone;
 	private boolean _allDay;
 	private String _recurrence;
 	private int _priority;
 	private boolean _outOfOffice;
-	private int _remindBy;
 	private int _firstReminder;
 	private int _secondReminder;
 	private boolean _required;

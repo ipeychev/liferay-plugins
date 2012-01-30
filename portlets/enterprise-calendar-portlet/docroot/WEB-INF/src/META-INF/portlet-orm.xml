@@ -66,16 +66,13 @@
 			<basic name="startDate">
 				<temporal>TIMESTAMP</temporal>
 			</basic>
-			<basic name="startTimeZone" />
 			<basic name="endDate">
 				<temporal>TIMESTAMP</temporal>
 			</basic>
-			<basic name="endDateTimeZone" />
 			<basic name="allDay" />
 			<basic name="recurrence" />
 			<basic name="priority" />
 			<basic name="outOfOffice" />
-			<basic name="remindBy" />
 			<basic name="firstReminder" />
 			<basic name="secondReminder" />
 			<basic name="required" />
@@ -119,6 +116,7 @@
 			<basic name="classNameId" />
 			<basic name="classPK" />
 			<basic name="classUuid" />
+			<basic name="defaultCalendarId" />
 			<basic name="code">
 				<column name="CODE_" />
 			</basic>

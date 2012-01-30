@@ -693,24 +693,6 @@ public class CalendarBookingWrapper implements CalendarBooking,
 	}
 
 	/**
-	* Returns the start time zone of this calendar booking.
-	*
-	* @return the start time zone of this calendar booking
-	*/
-	public java.lang.String getStartTimeZone() {
-		return _calendarBooking.getStartTimeZone();
-	}
-
-	/**
-	* Sets the start time zone of this calendar booking.
-	*
-	* @param startTimeZone the start time zone of this calendar booking
-	*/
-	public void setStartTimeZone(java.lang.String startTimeZone) {
-		_calendarBooking.setStartTimeZone(startTimeZone);
-	}
-
-	/**
 	* Returns the end date of this calendar booking.
 	*
 	* @return the end date of this calendar booking
@@ -726,24 +708,6 @@ public class CalendarBookingWrapper implements CalendarBooking,
 	*/
 	public void setEndDate(java.util.Date endDate) {
 		_calendarBooking.setEndDate(endDate);
-	}
-
-	/**
-	* Returns the end date time zone of this calendar booking.
-	*
-	* @return the end date time zone of this calendar booking
-	*/
-	public java.lang.String getEndDateTimeZone() {
-		return _calendarBooking.getEndDateTimeZone();
-	}
-
-	/**
-	* Sets the end date time zone of this calendar booking.
-	*
-	* @param endDateTimeZone the end date time zone of this calendar booking
-	*/
-	public void setEndDateTimeZone(java.lang.String endDateTimeZone) {
-		_calendarBooking.setEndDateTimeZone(endDateTimeZone);
 	}
 
 	/**
@@ -834,24 +798,6 @@ public class CalendarBookingWrapper implements CalendarBooking,
 	*/
 	public void setOutOfOffice(boolean outOfOffice) {
 		_calendarBooking.setOutOfOffice(outOfOffice);
-	}
-
-	/**
-	* Returns the remind by of this calendar booking.
-	*
-	* @return the remind by of this calendar booking
-	*/
-	public int getRemindBy() {
-		return _calendarBooking.getRemindBy();
-	}
-
-	/**
-	* Sets the remind by of this calendar booking.
-	*
-	* @param remindBy the remind by of this calendar booking
-	*/
-	public void setRemindBy(int remindBy) {
-		_calendarBooking.setRemindBy(remindBy);
 	}
 
 	/**
@@ -1160,6 +1106,12 @@ public class CalendarBookingWrapper implements CalendarBooking,
 	public void persist()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_calendarBooking.persist();
+	}
+
+	public com.liferay.calendar.model.CalendarResource getCalendarResource()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _calendarBooking.getCalendarResource();
 	}
 
 	/**

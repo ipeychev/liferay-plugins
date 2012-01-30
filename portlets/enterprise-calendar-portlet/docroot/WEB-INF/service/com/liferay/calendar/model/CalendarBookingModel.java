@@ -566,21 +566,6 @@ public interface CalendarBookingModel extends BaseModel<CalendarBooking>,
 	public void setStartDate(Date startDate);
 
 	/**
-	 * Returns the start time zone of this calendar booking.
-	 *
-	 * @return the start time zone of this calendar booking
-	 */
-	@AutoEscape
-	public String getStartTimeZone();
-
-	/**
-	 * Sets the start time zone of this calendar booking.
-	 *
-	 * @param startTimeZone the start time zone of this calendar booking
-	 */
-	public void setStartTimeZone(String startTimeZone);
-
-	/**
 	 * Returns the end date of this calendar booking.
 	 *
 	 * @return the end date of this calendar booking
@@ -593,21 +578,6 @@ public interface CalendarBookingModel extends BaseModel<CalendarBooking>,
 	 * @param endDate the end date of this calendar booking
 	 */
 	public void setEndDate(Date endDate);
-
-	/**
-	 * Returns the end date time zone of this calendar booking.
-	 *
-	 * @return the end date time zone of this calendar booking
-	 */
-	@AutoEscape
-	public String getEndDateTimeZone();
-
-	/**
-	 * Sets the end date time zone of this calendar booking.
-	 *
-	 * @param endDateTimeZone the end date time zone of this calendar booking
-	 */
-	public void setEndDateTimeZone(String endDateTimeZone);
 
 	/**
 	 * Returns the all day of this calendar booking.
@@ -679,20 +649,6 @@ public interface CalendarBookingModel extends BaseModel<CalendarBooking>,
 	 * @param outOfOffice the out of office of this calendar booking
 	 */
 	public void setOutOfOffice(boolean outOfOffice);
-
-	/**
-	 * Returns the remind by of this calendar booking.
-	 *
-	 * @return the remind by of this calendar booking
-	 */
-	public int getRemindBy();
-
-	/**
-	 * Sets the remind by of this calendar booking.
-	 *
-	 * @param remindBy the remind by of this calendar booking
-	 */
-	public void setRemindBy(int remindBy);
 
 	/**
 	 * Returns the first reminder of this calendar booking.

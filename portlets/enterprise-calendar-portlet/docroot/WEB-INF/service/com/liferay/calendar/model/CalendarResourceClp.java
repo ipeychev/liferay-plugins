@@ -180,6 +180,14 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 		_classUuid = classUuid;
 	}
 
+	public long getDefaultCalendarId() {
+		return _defaultCalendarId;
+	}
+
+	public void setDefaultCalendarId(long defaultCalendarId) {
+		_defaultCalendarId = defaultCalendarId;
+	}
+
 	public String getCode() {
 		return _code;
 	}
@@ -443,6 +451,7 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 		clone.setClassNameId(getClassNameId());
 		clone.setClassPK(getClassPK());
 		clone.setClassUuid(getClassUuid());
+		clone.setDefaultCalendarId(getDefaultCalendarId());
 		clone.setCode(getCode());
 		clone.setName(getName());
 		clone.setDescription(getDescription());
@@ -497,7 +506,7 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -523,6 +532,8 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 		sb.append(getClassPK());
 		sb.append(", classUuid=");
 		sb.append(getClassUuid());
+		sb.append(", defaultCalendarId=");
+		sb.append(getDefaultCalendarId());
 		sb.append(", code=");
 		sb.append(getCode());
 		sb.append(", name=");
@@ -539,7 +550,7 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 	}
 
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(58);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.calendar.model.CalendarResource");
@@ -594,6 +605,10 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 		sb.append(getClassUuid());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>defaultCalendarId</column-name><column-value><![CDATA[");
+		sb.append(getDefaultCalendarId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>code</column-name><column-value><![CDATA[");
 		sb.append(getCode());
 		sb.append("]]></column-value></column>");
@@ -632,6 +647,7 @@ public class CalendarResourceClp extends BaseModelImpl<CalendarResource>
 	private long _classNameId;
 	private long _classPK;
 	private String _classUuid;
+	private long _defaultCalendarId;
 	private String _code;
 	private String _name;
 	private String _nameCurrentLanguageId;

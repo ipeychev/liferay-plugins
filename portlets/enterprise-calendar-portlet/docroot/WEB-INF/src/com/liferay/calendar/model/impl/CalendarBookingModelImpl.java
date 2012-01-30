@@ -88,14 +88,11 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 			{ "location", Types.VARCHAR },
 			{ "type_", Types.VARCHAR },
 			{ "startDate", Types.TIMESTAMP },
-			{ "startTimeZone", Types.VARCHAR },
 			{ "endDate", Types.TIMESTAMP },
-			{ "endDateTimeZone", Types.VARCHAR },
 			{ "allDay", Types.BOOLEAN },
 			{ "recurrence", Types.VARCHAR },
 			{ "priority", Types.INTEGER },
 			{ "outOfOffice", Types.BOOLEAN },
-			{ "remindBy", Types.INTEGER },
 			{ "firstReminder", Types.INTEGER },
 			{ "secondReminder", Types.INTEGER },
 			{ "required", Types.BOOLEAN },
@@ -106,7 +103,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 			{ "statusByUserName", Types.VARCHAR },
 			{ "statusDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table CalendarBooking (uuid_ VARCHAR(75) null,calendarBookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,calendarId LONG,calendarResourceId LONG,parentCalendarBookingId LONG,title STRING null,description STRING null,location STRING null,type_ VARCHAR(75) null,startDate DATE null,startTimeZone VARCHAR(75) null,endDate DATE null,endDateTimeZone VARCHAR(75) null,allDay BOOLEAN,recurrence VARCHAR(75) null,priority INTEGER,outOfOffice BOOLEAN,remindBy INTEGER,firstReminder INTEGER,secondReminder INTEGER,required BOOLEAN,requestMessage VARCHAR(75) null,responseMessage VARCHAR(75) null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table CalendarBooking (uuid_ VARCHAR(75) null,calendarBookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,calendarId LONG,calendarResourceId LONG,parentCalendarBookingId LONG,title STRING null,description STRING null,location STRING null,type_ VARCHAR(75) null,startDate DATE null,endDate DATE null,allDay BOOLEAN,recurrence VARCHAR(75) null,priority INTEGER,outOfOffice BOOLEAN,firstReminder INTEGER,secondReminder INTEGER,required BOOLEAN,requestMessage VARCHAR(75) null,responseMessage VARCHAR(75) null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table CalendarBooking";
 	public static final String ORDER_BY_JPQL = " ORDER BY calendarBooking.startDate ASC, calendarBooking.title ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY CalendarBooking.startDate ASC, CalendarBooking.title ASC";
@@ -125,9 +122,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	public static long CALENDARID_COLUMN_BITMASK = 1L;
 	public static long CALENDARRESOURCEID_COLUMN_BITMASK = 2L;
 	public static long GROUPID_COLUMN_BITMASK = 4L;
-	public static long REMINDBY_COLUMN_BITMASK = 8L;
-	public static long STATUS_COLUMN_BITMASK = 16L;
-	public static long UUID_COLUMN_BITMASK = 32L;
+	public static long STATUS_COLUMN_BITMASK = 8L;
+	public static long UUID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -154,14 +150,11 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		model.setLocation(soapModel.getLocation());
 		model.setType(soapModel.getType());
 		model.setStartDate(soapModel.getStartDate());
-		model.setStartTimeZone(soapModel.getStartTimeZone());
 		model.setEndDate(soapModel.getEndDate());
-		model.setEndDateTimeZone(soapModel.getEndDateTimeZone());
 		model.setAllDay(soapModel.getAllDay());
 		model.setRecurrence(soapModel.getRecurrence());
 		model.setPriority(soapModel.getPriority());
 		model.setOutOfOffice(soapModel.getOutOfOffice());
-		model.setRemindBy(soapModel.getRemindBy());
 		model.setFirstReminder(soapModel.getFirstReminder());
 		model.setSecondReminder(soapModel.getSecondReminder());
 		model.setRequired(soapModel.getRequired());
@@ -685,40 +678,12 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	}
 
 	@JSON
-	public String getStartTimeZone() {
-		if (_startTimeZone == null) {
-			return StringPool.BLANK;
-		}
-		else {
-			return _startTimeZone;
-		}
-	}
-
-	public void setStartTimeZone(String startTimeZone) {
-		_startTimeZone = startTimeZone;
-	}
-
-	@JSON
 	public Date getEndDate() {
 		return _endDate;
 	}
 
 	public void setEndDate(Date endDate) {
 		_endDate = endDate;
-	}
-
-	@JSON
-	public String getEndDateTimeZone() {
-		if (_endDateTimeZone == null) {
-			return StringPool.BLANK;
-		}
-		else {
-			return _endDateTimeZone;
-		}
-	}
-
-	public void setEndDateTimeZone(String endDateTimeZone) {
-		_endDateTimeZone = endDateTimeZone;
 	}
 
 	@JSON
@@ -768,27 +733,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	public void setOutOfOffice(boolean outOfOffice) {
 		_outOfOffice = outOfOffice;
-	}
-
-	@JSON
-	public int getRemindBy() {
-		return _remindBy;
-	}
-
-	public void setRemindBy(int remindBy) {
-		_columnBitmask |= REMINDBY_COLUMN_BITMASK;
-
-		if (!_setOriginalRemindBy) {
-			_setOriginalRemindBy = true;
-
-			_originalRemindBy = _remindBy;
-		}
-
-		_remindBy = remindBy;
-	}
-
-	public int getOriginalRemindBy() {
-		return _originalRemindBy;
 	}
 
 	@JSON
@@ -1005,14 +949,11 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		calendarBookingImpl.setLocation(getLocation());
 		calendarBookingImpl.setType(getType());
 		calendarBookingImpl.setStartDate(getStartDate());
-		calendarBookingImpl.setStartTimeZone(getStartTimeZone());
 		calendarBookingImpl.setEndDate(getEndDate());
-		calendarBookingImpl.setEndDateTimeZone(getEndDateTimeZone());
 		calendarBookingImpl.setAllDay(getAllDay());
 		calendarBookingImpl.setRecurrence(getRecurrence());
 		calendarBookingImpl.setPriority(getPriority());
 		calendarBookingImpl.setOutOfOffice(getOutOfOffice());
-		calendarBookingImpl.setRemindBy(getRemindBy());
 		calendarBookingImpl.setFirstReminder(getFirstReminder());
 		calendarBookingImpl.setSecondReminder(getSecondReminder());
 		calendarBookingImpl.setRequired(getRequired());
@@ -1095,10 +1036,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		calendarBookingModelImpl._originalCalendarResourceId = calendarBookingModelImpl._calendarResourceId;
 
 		calendarBookingModelImpl._setOriginalCalendarResourceId = false;
-
-		calendarBookingModelImpl._originalRemindBy = calendarBookingModelImpl._remindBy;
-
-		calendarBookingModelImpl._setOriginalRemindBy = false;
 
 		calendarBookingModelImpl._originalStatus = calendarBookingModelImpl._status;
 
@@ -1200,14 +1137,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 			calendarBookingCacheModel.startDate = Long.MIN_VALUE;
 		}
 
-		calendarBookingCacheModel.startTimeZone = getStartTimeZone();
-
-		String startTimeZone = calendarBookingCacheModel.startTimeZone;
-
-		if ((startTimeZone != null) && (startTimeZone.length() == 0)) {
-			calendarBookingCacheModel.startTimeZone = null;
-		}
-
 		Date endDate = getEndDate();
 
 		if (endDate != null) {
@@ -1215,14 +1144,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		}
 		else {
 			calendarBookingCacheModel.endDate = Long.MIN_VALUE;
-		}
-
-		calendarBookingCacheModel.endDateTimeZone = getEndDateTimeZone();
-
-		String endDateTimeZone = calendarBookingCacheModel.endDateTimeZone;
-
-		if ((endDateTimeZone != null) && (endDateTimeZone.length() == 0)) {
-			calendarBookingCacheModel.endDateTimeZone = null;
 		}
 
 		calendarBookingCacheModel.allDay = getAllDay();
@@ -1238,8 +1159,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		calendarBookingCacheModel.priority = getPriority();
 
 		calendarBookingCacheModel.outOfOffice = getOutOfOffice();
-
-		calendarBookingCacheModel.remindBy = getRemindBy();
 
 		calendarBookingCacheModel.firstReminder = getFirstReminder();
 
@@ -1289,7 +1208,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1323,12 +1242,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		sb.append(getType());
 		sb.append(", startDate=");
 		sb.append(getStartDate());
-		sb.append(", startTimeZone=");
-		sb.append(getStartTimeZone());
 		sb.append(", endDate=");
 		sb.append(getEndDate());
-		sb.append(", endDateTimeZone=");
-		sb.append(getEndDateTimeZone());
 		sb.append(", allDay=");
 		sb.append(getAllDay());
 		sb.append(", recurrence=");
@@ -1337,8 +1252,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		sb.append(getPriority());
 		sb.append(", outOfOffice=");
 		sb.append(getOutOfOffice());
-		sb.append(", remindBy=");
-		sb.append(getRemindBy());
 		sb.append(", firstReminder=");
 		sb.append(getFirstReminder());
 		sb.append(", secondReminder=");
@@ -1363,7 +1276,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	}
 
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(103);
+		StringBundler sb = new StringBundler(94);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.calendar.model.CalendarBooking");
@@ -1434,16 +1347,8 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		sb.append(getStartDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>startTimeZone</column-name><column-value><![CDATA[");
-		sb.append(getStartTimeZone());
-		sb.append("]]></column-value></column>");
-		sb.append(
 			"<column><column-name>endDate</column-name><column-value><![CDATA[");
 		sb.append(getEndDate());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>endDateTimeZone</column-name><column-value><![CDATA[");
-		sb.append(getEndDateTimeZone());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>allDay</column-name><column-value><![CDATA[");
@@ -1460,10 +1365,6 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 		sb.append(
 			"<column><column-name>outOfOffice</column-name><column-value><![CDATA[");
 		sb.append(getOutOfOffice());
-		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>remindBy</column-name><column-value><![CDATA[");
-		sb.append(getRemindBy());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>firstReminder</column-name><column-value><![CDATA[");
@@ -1538,16 +1439,11 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	private String _locationCurrentLanguageId;
 	private String _type;
 	private Date _startDate;
-	private String _startTimeZone;
 	private Date _endDate;
-	private String _endDateTimeZone;
 	private boolean _allDay;
 	private String _recurrence;
 	private int _priority;
 	private boolean _outOfOffice;
-	private int _remindBy;
-	private int _originalRemindBy;
-	private boolean _setOriginalRemindBy;
 	private int _firstReminder;
 	private int _secondReminder;
 	private boolean _required;

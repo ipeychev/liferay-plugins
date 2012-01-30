@@ -35,7 +35,7 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 	Serializable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -69,12 +69,8 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 		sb.append(type);
 		sb.append(", startDate=");
 		sb.append(startDate);
-		sb.append(", startTimeZone=");
-		sb.append(startTimeZone);
 		sb.append(", endDate=");
 		sb.append(endDate);
-		sb.append(", endDateTimeZone=");
-		sb.append(endDateTimeZone);
 		sb.append(", allDay=");
 		sb.append(allDay);
 		sb.append(", recurrence=");
@@ -83,8 +79,6 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 		sb.append(priority);
 		sb.append(", outOfOffice=");
 		sb.append(outOfOffice);
-		sb.append(", remindBy=");
-		sb.append(remindBy);
 		sb.append(", firstReminder=");
 		sb.append(firstReminder);
 		sb.append(", secondReminder=");
@@ -183,25 +177,11 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 			calendarBookingImpl.setStartDate(new Date(startDate));
 		}
 
-		if (startTimeZone == null) {
-			calendarBookingImpl.setStartTimeZone(StringPool.BLANK);
-		}
-		else {
-			calendarBookingImpl.setStartTimeZone(startTimeZone);
-		}
-
 		if (endDate == Long.MIN_VALUE) {
 			calendarBookingImpl.setEndDate(null);
 		}
 		else {
 			calendarBookingImpl.setEndDate(new Date(endDate));
-		}
-
-		if (endDateTimeZone == null) {
-			calendarBookingImpl.setEndDateTimeZone(StringPool.BLANK);
-		}
-		else {
-			calendarBookingImpl.setEndDateTimeZone(endDateTimeZone);
 		}
 
 		calendarBookingImpl.setAllDay(allDay);
@@ -215,7 +195,6 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 
 		calendarBookingImpl.setPriority(priority);
 		calendarBookingImpl.setOutOfOffice(outOfOffice);
-		calendarBookingImpl.setRemindBy(remindBy);
 		calendarBookingImpl.setFirstReminder(firstReminder);
 		calendarBookingImpl.setSecondReminder(secondReminder);
 		calendarBookingImpl.setRequired(required);
@@ -272,14 +251,11 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 	public String location;
 	public String type;
 	public long startDate;
-	public String startTimeZone;
 	public long endDate;
-	public String endDateTimeZone;
 	public boolean allDay;
 	public String recurrence;
 	public int priority;
 	public boolean outOfOffice;
-	public int remindBy;
 	public int firstReminder;
 	public int secondReminder;
 	public boolean required;

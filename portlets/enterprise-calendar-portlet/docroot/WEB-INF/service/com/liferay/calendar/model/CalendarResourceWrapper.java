@@ -303,6 +303,24 @@ public class CalendarResourceWrapper implements CalendarResource,
 	}
 
 	/**
+	* Returns the default calendar ID of this calendar resource.
+	*
+	* @return the default calendar ID of this calendar resource
+	*/
+	public long getDefaultCalendarId() {
+		return _calendarResource.getDefaultCalendarId();
+	}
+
+	/**
+	* Sets the default calendar ID of this calendar resource.
+	*
+	* @param defaultCalendarId the default calendar ID of this calendar resource
+	*/
+	public void setDefaultCalendarId(long defaultCalendarId) {
+		_calendarResource.setDefaultCalendarId(defaultCalendarId);
+	}
+
+	/**
 	* Returns the code of this calendar resource.
 	*
 	* @return the code of this calendar resource

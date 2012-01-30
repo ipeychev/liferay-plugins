@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.1.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_1_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
 
 <service-builder package-path="com.liferay.calendar" auto-namespace-tables="false">
 	<author>Eduardo Lundgren</author>
@@ -52,11 +52,6 @@
 			<finder-column name="calendarResourceId" />
 			<finder-column name="defaultCalendar" />
 		</finder>
-
-		<!-- References -->
-
-		<reference package-path="com.liferay.portal" entity="User" />
-		<reference package-path="com.liferay.portlet.expando" entity="ExpandoValue" />
 	</entity>
 	<entity name="CalendarBooking" uuid="true" local-service="true" remote-service="true">
 
@@ -86,14 +81,11 @@
 		<column name="location" type="String" localized="true" />
 		<column name="type" type="String" />
 		<column name="startDate" type="Date" />
-		<column name="startTimeZone" type="String" />
 		<column name="endDate" type="Date" />
-		<column name="endDateTimeZone" type="String" />
 		<column name="allDay" type="boolean" />
 		<column name="recurrence" type="String" />
 		<column name="priority" type="int" />
 		<column name="outOfOffice" type="boolean" />
-		<column name="remindBy" type="int" />
 		<column name="firstReminder" type="int" />
 		<column name="secondReminder" type="int" />
 		<column name="required" type="boolean" />
@@ -119,10 +111,6 @@
 		<finder name="CalendarResourceId" return-type="Collection">
 			<finder-column name="calendarResourceId" />
 		</finder>
-		<finder name="C_R" return-type="Collection">
-			<finder-column name="calendarId" />
-			<finder-column name="remindBy" comparator="!=" />
-		</finder>
 		<finder name="C_S" return-type="Collection">
 			<finder-column name="calendarResourceId" />
 			<finder-column name="status" />
@@ -131,10 +119,6 @@
 		<!-- References -->
 
 		<reference package-path="com.liferay.mail" entity="Mail" />
-		<reference package-path="com.liferay.portal" entity="Company" />
-		<reference package-path="com.liferay.portal" entity="Group" />
-		<reference package-path="com.liferay.portal" entity="User" />
-		<reference package-path="com.liferay.portlet.expando" entity="ExpandoValue" />
 	</entity>
 
 	<entity name="CalendarResource" uuid="true" local-service="true" remote-service="true">
@@ -164,6 +148,7 @@
 		<column name="classNameId" type="long" />
 		<column name="classPK" type="long" />
 		<column name="classUuid" type="String" />
+		<column name="defaultCalendarId" type="long" />
 		<column name="code" type="String" />
 		<column name="name" type="String" localized="true" />
 		<column name="description" type="String" localized="true" />
@@ -209,16 +194,13 @@
 			<finder-column name="name" comparator="LIKE" />
 			<finder-column name="active" />
 		</finder>
-
-		<!-- References -->
-
-		<reference package-path="com.liferay.portlet.expando" entity="ExpandoValue" />
 	</entity>
 	<exceptions>
 		<exception>CalendarBookingDuration</exception>
 		<exception>CalendarBookingEndDate</exception>
 		<exception>CalendarBookingStartDate</exception>
 		<exception>CalendarBookingTitle</exception>
+		<exception>CalendarName</exception>
 		<exception>DuplicateCalendarResource</exception>
 	</exceptions>
 </service-builder>
