@@ -102,11 +102,7 @@ boolean portalUser = ParamUtil.getBoolean(request, "portalUser");
 											{
 												after: {
 													failure: function(event, id, obj) {
-														var saveMessages = A.one('#<portlet:namespace/>saveMessages');
-
-														if (saveMessages) {
-															saveMessages.html('<span class="portlet-msg-error">' + Liferay.Language.get('an-error-occurred-while-retrieving-the-users-information') + '</span>');
-														}
+														Liferay.ContactsCenter.showMessage(false);
 													},
 													success: function(event, id, obj) {
 														location.href = '<%= redirect %>';
