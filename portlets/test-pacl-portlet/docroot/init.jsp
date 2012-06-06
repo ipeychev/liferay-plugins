@@ -14,6 +14,8 @@
  */
 --%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
@@ -65,7 +67,6 @@ page import="com.liferay.portlet.blogs.service.BlogsEntryLocalService" %><%@
 page import="com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil" %><%@
 page import="com.liferay.portlet.blogs.service.BlogsStatsUserLocalServiceUtil" %><%@
 page import="com.liferay.portlet.journalcontent.util.JournalContentUtil" %><%@
-page import="com.liferay.portlet.layoutconfiguration.util.RuntimePageUtil" %><%@
 page import="com.liferay.testpacl.hook.action.FailureStrutsAction" %><%@
 page import="com.liferay.testpacl.hook.action.SuccessStrutsAction" %><%@
 page import="com.liferay.testpacl.hook.indexer.OrganizationIndexerPostProcessor" %><%@
