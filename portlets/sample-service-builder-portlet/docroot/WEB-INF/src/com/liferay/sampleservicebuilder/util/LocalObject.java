@@ -12,29 +12,10 @@
  * details.
  */
 
-package com.liferay.testpacl.servlet;
-
-import com.liferay.testpacl.util.TestPACLUtil;
-
-import javax.servlet.http.HttpServlet;
+package com.liferay.sampleservicebuilder.util;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class TestPACLServlet extends HttpServlet {
-
-	public TestPACLServlet() {
-		TestPACLUtil.testWriteFile();
-	}
-
-	@Override
-	public void destroy() {
-		TestPACLUtil.testWriteFile();
-	}
-
-	@Override
-	public void init() {
-		TestPACLUtil.testWriteFile();
-	}
-
+public class LocalObject {
 }
