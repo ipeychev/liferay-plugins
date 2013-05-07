@@ -231,10 +231,14 @@ AUI.add(
 					_getMapAddress: function(value) {
 						var instance = this;
 
-						if (!Lang.isValue(value) && instance.get('mapInputEnabled')) {
+						if (instance.get('mapInputEnabled')) {
 							var mapAddressNode = instance.byId(STR_MAP_ADDRESS);
 
-							value = mapAddressNode.val();
+							var mapAddress = mapAddressNode.val();
+							
+							if (mapAddress) {
+								value = mapAddress;
+							}
 						}
 
 						return value;
@@ -250,6 +254,21 @@ AUI.add(
 						googleMapsURL = googleMapsURL + '?sensor=true&language=' + instance.get('languageId') + '&callback=Liferay.GOOGLE_MAPS.onGoogleMapsLoaded';
 
 						A.Get.script(googleMapsURL);
+					},
+					
+					_isDirectionFilled: function() {
+						var instance = this;
+						
+						if (instance.get(STR_DIRECTION_ADDRESS)) {
+							
+							var directionsAddress = instance.byId(STR_DIRECTION_ADDRESS).val();
+							
+							if (directionsAddress) {
+								return true;
+							}
+						}
+						
+						return false;
 					},
 
 					_isGoogleMapLoaded: function() {
@@ -309,8 +328,13 @@ AUI.add(
 						var instance = this;
 
 						event.preventDefault();
-
-						instance._getMap();
+						
+						if (instance._isDirectionFilled()) {
+							instance._getDirections();
+						}
+						else {
+							instance._getMap();
+						}
 					},
 
 					_onMarkerClick: function(event, marker, text) {
@@ -403,7 +427,7 @@ AUI.add(
 
 						instance._stepDisplay = new googleMaps.InfoWindow();
 
-						if (instance.get(STR_DIRECTION_ADDRESS)) {
+						if (instance._isDirectionFilled()) {
 							instance._getDirections();
 						}
 						else {
