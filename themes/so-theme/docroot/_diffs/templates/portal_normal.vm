@@ -124,7 +124,9 @@ $theme.include($body_top_include)
 		</div>
 	</header>
 
-	<div id="content">
+	<section id="content">
+		<h1 class="hide-accessible">$the_title</h1>
+
 		#if ($has_navigation || $is_signed_in)
 			#parse ("$full_templates_path/navigation.vm")
 		#end
@@ -138,7 +140,7 @@ $theme.include($body_top_include)
 
 			$theme.wrapPortlet("portlet.vm", $content_include)
 		#end
-	</div>
+	</section>
 
 	<footer id="footer" role="contentinfo">
 		<p class="powered-by">

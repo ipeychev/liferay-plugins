@@ -1,4 +1,6 @@
-<div class="$nav_css_class" id="navigation">
+<nav class="$nav_css_class" id="navigation">
+	<h1 class="hide-accessible">#language ("navigation")</h1>
+
 	#if ($is_profile_page)
 		<div class="taglib-logo-selector" id="${themeNamespace}taglibLogoSelector">
 			<div class="taglib-logo-selector-content" id="${themeNamespace}taglibLogoSelectorContent">
@@ -20,10 +22,6 @@
 			</div>
 		</div>
 	#end
-
-	<h1>
-		<span>#language("navigation")</span>
-	</h1>
 
 	<ul>
 		#foreach ($navItem in $navItems)
@@ -51,7 +49,7 @@
 			</li>
 		#end
 	</ul>
-</div>
+</nav>
 
 #if ($show_edit_profile_button)
 	<script type="text/javascript">

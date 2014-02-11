@@ -659,7 +659,7 @@ a {
 	}
 }
 
-div#navigation {
+nav#navigation {
 	background: $navigationBgColor;
 	float: left;
 	margin-left: -156px;
@@ -2497,7 +2497,7 @@ html.aui {
 			border-width: 0;
 		}
 
-		div#navigation {
+		nav#navigation {
 			@include clear-both;
 
 			float: none;
