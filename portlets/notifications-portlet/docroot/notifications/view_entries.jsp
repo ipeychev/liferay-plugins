@@ -82,46 +82,51 @@ for (UserNotificationEvent userNotificationEvent : userNotificationEvents) {
 	boolean read = userNotificationEvent.isArchived();
 %>
 
+	<liferay-util:buffer var="notificationContent">
+		<div class="sender">
+			<span class="user-thumbnail">
+				<img alt="<%= userFullName %>" src="<%= userPortaitURL %>" />
+			</span>
+		</div>
+
+		<div class="content">
+			<div class="body">
+				<%= userNotificationFeedEntry.getBody() %>
+			</div>
+
+			<div class="timestamp">
+				<span class="portlet-icon">
+					<liferay-portlet:icon-portlet
+						portlet="<%= PortletLocalServiceUtil.getPortletById(company.getCompanyId(), userNotificationEvent.getType()) %>"
+					/>
+				</span>
+
+				<%= simpleDateFormat.format(userNotificationEvent.getTimestamp()) %>
+			</div>
+
+			<c:if test='<%= !filter.equals("unread") %>'>
+				<div class="read">
+					<liferay-ui:message key='<%= read ? "read" : "unread" %>' />
+				</div>
+			</c:if>
+		</div>
+	</liferay-util:buffer>
+
 	<li class="user-notification<%= read ? "" : " unread" %>">
 		<c:choose>
 			<c:when test="<%= read %>">
 				<div class="clearfix user-notification-link" data-href="<%= userNotificationFeedEntry.getLink() %>">
+					<%= notificationContent %>
+				</div>
 			</c:when>
 			<c:otherwise>
 				<liferay-portlet:actionURL name="markAsRead" var="markAsReadURL"><portlet:param name="userNotificationEventId" value="<%= String.valueOf(userNotificationEvent.getUserNotificationEventId()) %>" /></liferay-portlet:actionURL>
 
 				<div class="clearfix user-notification-link" data-href="<%= userNotificationFeedEntry.getLink() %>" data-markAsReadURL="<%= markAsReadURL %>">
+					<%= notificationContent %>
+				</div>
 			</c:otherwise>
 		</c:choose>
-
-			<div class="sender">
-				<span class="user-thumbnail">
-					<img alt="<%= userFullName %>" src="<%= userPortaitURL %>" />
-				</span>
-			</div>
-
-			<div class="content">
-				<div class="body">
-					<%= userNotificationFeedEntry.getBody() %>
-				</div>
-
-				<div class="timestamp">
-					<span class="portlet-icon">
-						<liferay-portlet:icon-portlet
-							portlet="<%= PortletLocalServiceUtil.getPortletById(company.getCompanyId(), userNotificationEvent.getType()) %>"
-						/>
-					</span>
-
-					<%= simpleDateFormat.format(userNotificationEvent.getTimestamp()) %>
-				</div>
-
-				<c:if test='<%= !filter.equals("unread") %>'>
-					<div class="read">
-						<liferay-ui:message key='<%= read ? "read" : "unread" %>' />
-					</div>
-				</c:if>
-			</div>
-		</div>
 	</li>
 
 <%
@@ -162,13 +167,11 @@ for (UserNotificationEvent userNotificationEvent : userNotificationEvents) {
 </c:if>
 
 <aui:script use="aui-base,aui-io-plugin-deprecated">
-	<c:if test='<%= filter.equals("unread") %>'>
-		var unreadCount = A.one('#portlet_<%= PortletKeys.NOTIFICATIONS %> .user-notifications-sidebar .unread .count');
+	var unreadCount = A.one('#portlet_<%= PortletKeys.NOTIFICATIONS %> .user-notifications-sidebar .unread .count');
 
-		if (unreadCount) {
-			unreadCount.setHTML('<%= userNotificationEventsCount %>');
-		}
-	</c:if>
+	if (unreadCount) {
+		unreadCount.setHTML('<%= userNotificationEventsCount %>');
+	}
 
 	var userNotificationsList = A.one('#portlet_<%= PortletKeys.NOTIFICATIONS %> .user-notifications-list-container .user-notifications-list');
 
