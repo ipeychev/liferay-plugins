@@ -33,6 +33,8 @@ ckEditor.config.autocomplete = {
 	'acConfig.requestTemplate': function(query) {
 		return 'query=' + query;
 	},
+	replaceMode: 'html',
 	source: 'http://localhost:8080/group/control_panel/manage?p_p_auth=Hitb13YK&p_p_id=1_WAR_mentionsportlet&p_p_lifecycle=2&p_p_state=maximized&p_p_mode=view&p_p_cacheability=cacheLevelPage&doAsGroupId=10187&refererPlid=10190&controlPanelCategory=current_site.content&_1_WAR_mentionsportlet_',
+	tplReplace: '<a href="{portraitURL}"><strong>@{screenName}</strong></a>',
 	tplResults: '<div class="taglib-user-display display-style-3"><span><span class="user-profile-image" style="background-image: url(\'{portraitURL}\'); background-size: 32px 32px; height: 32px; width: 32px;"></span><span class="user-name">{fullName}</span><span class="user-details">@{screenName}</span></span></div>'
 };
