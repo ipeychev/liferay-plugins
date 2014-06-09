@@ -23,21 +23,36 @@
 <c:if test="<%= _isMentionsEnabled(themeDisplay.getSiteGroupId()) %>">
 	<liferay-portlet:resourceURL portletName="1_WAR_mentionsportlet" var="autoCompleteUserURL" />
 
-	<aui:script use="liferay-autocomplete-input">
-		new Liferay.AutoCompleteInput(
+	<aui:script use="liferay-autocomplete-textarea">
+		new Liferay.AutoCompleteTextarea(
 			{
-				'acConfig.resultTextLocator': 'screenName',
-				'acConfig.resultFilters': function(query, results) {
-					return results;
-				},
-				'acConfig.requestTemplate': function(query) {
+				inputNode: '#<portlet:namespace /><%= randomNamespace + "postReplyBody" + "0" %>',
+				requestTemplate: function(query) {
 					return 'query=' + query;
 				},
-				inputNode: '#<portlet:namespace /><%= randomNamespace + "postReplyBody" + "0" %>',
-				source: '<%= autoCompleteUserURL.toString() + "&" + PortalUtil.getPortletNamespace("1_WAR_mentionsportlet") %>',
-				tplResults: '<div class="taglib-user-display display-style-3"><span><span class="user-profile-image" style="background-image: url(\'{portraitURL}\'); background-size: 32px 32px; height: 32px; width: 32px;"></span><span class="user-name">{fullName}</span><span class="user-details">@{screenName}</span></span></div>'
+				trigger: [
+					{
+						resultTextLocator: 'number',
+						term: '#',
+						tplResults: '<div>Number: <strong>{number}</strong></div>',
+						source: [{number: '12'}, {number: '21'}, {number: '34'}, {number: '43'}]
+					},
+					{
+						resultFilters: function(query, results) { return results; },
+						resultTextLocator: 'screenName',
+						term: '@',
+						tplResults: '<div class="taglib-user-display display-style-3"><span><span class="user-profile-image" style="background-image: url(\'{portraitURL}\'); background-size: 32px 32px; height: 32px; width: 32px;"></span><span class="user-name">{fullName}</span><span class="user-details">@{screenName}</span></span></div>',
+						source: '<%= autoCompleteUserURL.toString() + "&" + PortalUtil.getPortletNamespace("1_WAR_mentionsportlet") %>'
+					},
+					{
+						resultTextLocator: 'letter',
+						term: ':',
+						tplResults: '<div>Letter: <strong>{letter}</strong></div>',
+						source: [{letter: 'az'}, {letter: 'ba'}, {letter: 'cb'}, {letter: 'dc'}]
+					}
+				]
 			}
-		);
+		).render();
 	</aui:script>
 </c:if>
 
