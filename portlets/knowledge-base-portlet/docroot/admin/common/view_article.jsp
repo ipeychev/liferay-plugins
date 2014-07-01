@@ -50,15 +50,17 @@ if (enableKBArticleViewCountIncrement && !kbArticle.isDraft()) {
 
 	<%= kbArticle.getContent() %>
 
+	<liferay-util:include page="/admin/article_siblings.jsp" servletContext="<%= application %>" />
+
 	<liferay-util:include page="/admin/article_attachments.jsp" servletContext="<%= application %>" />
 
 	<liferay-util:include page="/admin/article_assets.jsp" servletContext="<%= application %>" />
 
 	<liferay-util:include page="/admin/article_ratings.jsp" servletContext="<%= application %>" />
 
+	<liferay-util:include page="/admin/article_comments.jsp" servletContext="<%= application %>" />
+
 	<liferay-util:include page="/admin/article_child.jsp" servletContext="<%= application %>" />
 
 	<liferay-util:include page="/admin/article_asset_entries.jsp" servletContext="<%= application %>" />
-
-	<liferay-util:include page="/admin/article_comments.jsp" servletContext="<%= application %>" />
 </div>
