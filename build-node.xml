@@ -6,11 +6,13 @@
 
 	<macrodef name="node-execute">
 		<attribute name="command"/>
+		<attribute default="" name="commandArgs" />
 		<attribute default="${user.dir}" name="working.dir" />
 
 		<sequential>
+			<property name="node.args" value="" />
 			<exec dir="@{working.dir}" executable="${basedir}/tools/node-v${nodejs.version}/bin/@{command}">
-				<arg line="${node.args}"/>
+				<arg line="@{commandArgs} ${node.args}"/>
 			</exec>
 		</sequential>
 	</macrodef>
@@ -140,9 +142,60 @@ ${nodejs.url[osx64]}.
 		</if>
 	</target>
 
+	<target name="transpile-js-files" depends="install-6to5">
+		<property name="transpiler.force" value="false" />
+		
+		<outofdate outputsourcespath="outdated-files" force="${transpiler.force}">
+			<sourcefiles>
+				<fileset dir="${transpiler.input.dir}">
+					<include name="html/js/liferay/**.js" />
+					<include name="html/portlet/**.js" />
+				</fileset>
+			</sourcefiles>
+			<mapper type="glob" dir="${transpiler.input.dir}" from="*.js" to="${transpiler.output.dir}/*.js" />
+			<sequential>
+				<if>
+					<istrue value="${transpiler.force}" />
+					<then>
+						<path id="outdated-files">
+							<fileset dir="${transpiler.input.dir}">
+								<include name="html/js/liferay/**.js" />
+								<include name="html/portlet/**.js" />
+							</fileset>
+						</path>
+					</then>
+				</if>
+				<pathconvert pathsep=" " property="outdated-files-param" setonempty="false" refid="outdated-files" >
+					<map from="${transpiler.input.dir}/" to="" />
+				</pathconvert>
+				
+				<node-execute
+					command="node"
+					commandArgs="${sdk.dir}/tools/node-v${nodejs.version}/node_modules/6to5/bin/6to5/index.js --modules amd --module-ids -d ${transpiler.output.dir} ${outdated-files-param}"
+					working.dir="${transpiler.input.dir}" />
+
+			</sequential>
+		</outofdate>
+	</target>
+
+	<target name="install-6to5" depends="download-node">
+		<if>
+			<not>
+				<available file="tools/node-v${nodejs.version}/node_modules/6to5" />
+			</not>
+			<then>
+				<antcall target="npm-execute">
+					<param name="node.args" value="install 6to5" />
+				</antcall>
+			</then>
+		</if>
+	</target>
+
 	<target name="node-execute" depends="download-node">
+		<property name="working.dir" value="${user.dir}" />
 		<node-execute
 			command="node"
+			working.dir="${working.dir}"
 		/>
 	</target>
 
