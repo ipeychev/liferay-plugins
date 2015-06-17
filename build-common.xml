@@ -22,6 +22,9 @@
 	<property file="${sdk.dir}/build.${env.HOST}.properties" />
 	<property file="${sdk.dir}/build.${env.HOSTNAME}.properties" />
 
+	<dirname file="${ivy.home}" property="ivy.home.dir" />
+	<property name="sdk.tools.dir" value="${ivy.home.dir}/tools" />
+
 	<if>
 		<isset property="app.server.dir" />
 		<then>
@@ -79,6 +82,7 @@
 	<path id="test.classpath">
 		<path refid="plugin.classpath" />
 		<path refid="plugin-test-type.classpath" />
+		<fileset dir="${ant.home}/lib" includes="ecj.jar" />
 		<fileset dir="${app.server.lib.portal.dir}" excludes="ant.jar" includes="*.jar" />
 		<fileset dir="${module.framework.base.dir}/test" erroronmissingdir="false" includes="portal-test*.jar" />
 	</path>
@@ -183,9 +187,13 @@ Error-Prone was automatically installed. Please rerun your task.
 		<sequential>
 			<local name="build-css.output" />
 
+			<path id="css.builder.classpath">
+				<fileset dir="${sdk.dir}/dependencies/com.liferay.css.builder/lib" includes="*.jar" />
+			</path>
+
 			<java
-				classname="com.liferay.portal.tools.SassToCssBuilder"
-				classpathref="portal.classpath"
+				classname="com.liferay.css.builder.CSSBuilder"
+				classpathref="css.builder.classpath"
 				fork="true"
 				newenvironment="true"
 				outputproperty="build-css.output"
@@ -196,7 +204,14 @@ Error-Prone was automatically installed. Please rerun your task.
 				<arg value="sass.portal.common.dir=${app.server.portal.dir}/html/css/common" />
 			</java>
 
-			<echo>${build-css.output}</echo>
+			<if>
+				<not>
+					<equals arg1="${build-css.output}" arg2="" />
+				</not>
+				<then>
+					<echo>${build-css.output}</echo>
+				</then>
+			</if>
 
 			<if>
 				<contains string="${build-css.output}" substring="Error" />
@@ -518,6 +533,7 @@ Error-Prone was automatically installed. Please rerun your task.
 				</then>
 			</if>
 
+			<delete dir="@{module.dir}/.js_cache" />
 			<delete dir="@{module.dir}/javadoc" />
 			<delete dir="@{module.dir}/pmd-reports" />
 			<delete dir="@{module.dir}/test-classes" />
@@ -1968,6 +1984,20 @@ Please find a solution that does not require portal-impl.jar.
 										</then>
 									</if>
 
+									<if>
+										<and>
+											<available file="@{module.dir}/src/META-INF/resources" />
+											<resourcecount count="0" when="gt">
+												<fileset dir="@{module.dir}/src/META-INF/resources" includes="**/*.es.js,*.es.js" />
+											</resourcecount>
+										</and>
+										<then>
+											<transpile-js
+												module.dir="@{module.dir}"
+											/>
+										</then>
+									</if>
+
 									<build-wsdl
 										module.dir="@{module.dir}"
 									/>
@@ -2721,15 +2751,38 @@ Please find a solution that does not require portal-impl.jar.
 					<if>
 						<available file="@{module.dir}/test/@{test.type}" type="dir" />
 						<then>
+							<local name="junit.java.gc" />
+
+							<if>
+								<equals arg1="@{test.type}" arg2="unit" />
+								<then>
+									<if>
+										<equals arg1="${junit.java.unit.gc.logging}" arg2="on" />
+										<then>
+											<property name="junit.java.gc" value="${junit.java.unit.gc} -verbose:gc -XX:+PrintGCCause -XX:+PrintGCDetails" />
+										</then>
+										<else>
+											<property name="junit.java.gc" value="${junit.java.unit.gc}" />
+										</else>
+									</if>
+								</then>
+								<else>
+									<local name="project.dir.name" />
+
+									<basename property="module.dir.name" file="@{module.dir}" />
+
+									<property name="junit.java.gc" value="${junit.java.integration.gc} -verbose:gc -Xloggc:/tmp/${module.dir.name}-@{test.type}-gc.log -XX:+PrintGCCause -XX:+PrintGCDetails" />
+								</else>
+							</if>
+
 							<junit dir="@{module.dir}" fork="on" forkmode="@{junit.forkmode}" jvm="${junit.jvm}" outputtoformatters="false" printsummary="on" showoutput="true">
 								<sysproperty key="app.server.tomcat.dir" value="${app.server.tomcat.dir}" />
 								<sysproperty key="whip.agent" file="${whip.agent}" />
 								<sysproperty key="whip.datafile" file="@{module.dir}/test-coverage/whip.dat" />
 								<sysproperty key="whip.instrument.dump" value="${whip.instrument.dump}" />
 								<jvmarg line="${junit.debug.jpda}" />
+								<jvmarg line="${junit.java.gc}" />
 								<jvmarg line="${whip.agent}" />
-								<jvmarg value="-Xmx${junit.java.mx}" />
-								<jvmarg value="-XX:MaxPermSize=${junit.java.maxpermsize}" />
 								<jvmarg value="-Dexternal-properties=${test.properties}" />
 								<jvmarg value="-Dfile.encoding=UTF-8" />
 								<jvmarg value="-Djava.net.preferIPv4Stack=true" />
@@ -2780,6 +2833,44 @@ Please find a solution that does not require portal-impl.jar.
 				test.class="**/*Test.class"
 				test.type="unit"
 			/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="transpile-js">
+		<attribute name="module.dir" />
+
+		<sequential>
+			<mkdir dir="@{module.dir}/.js_cache" />
+			<mkdir dir="@{module.dir}/tmp/transpile" />
+
+			<copy todir="@{module.dir}/tmp/transpile">
+				<fileset dir="@{module.dir}/src">
+					<include name="**/*.es.js" />
+				</fileset>
+			</copy>
+
+			<copy
+				file="@{module.dir}/bower.json"
+				overwrite="true"
+				tofile="@{module.dir}/.js_cache/bower.json"
+			/>
+
+			<ant antfile="${sdk.dir}/build-node.xml" target="transpile-js-files">
+				<property name="transpiler.input.dir" value="@{module.dir}/tmp/transpile" />
+				<property name="transpiler.output.dir" value="@{module.dir}/.js_cache" />
+			</ant>
+
+			<ant antfile="${sdk.dir}/build-node.xml" target="generate-modules-config">
+				<property name="config.generator.config.variable" value="" />
+				<property name="config.generator.file.extension" value="" />
+				<property name="config.generator.file.pattern" value="**/*.es.js" />
+				<property name="config.generator.input.dir" value="@{module.dir}/.js_cache" />
+				<property name="config.generator.module.config" value="@{module.dir}/.js_cache/bower.json" />
+				<property name="config.generator.module.format" value="/_/g,-" />
+				<property name="config.generator.output.file" value="@{module.dir}/classes/META-INF/config.json" />
+				<property name="config.generator.path.ignore" value="true" />
+				<property name="config.generator.root.dir" value="@{module.dir}/.js_cache/META-INF/resources" />
+			</ant>
 		</sequential>
 	</macrodef>
 
@@ -3191,18 +3282,7 @@ for (String path : paths) {
 		<for param="module.web.dir">
 			<dirset dir="." excludes="**/templates/**" />
 			<sequential>
-				<if>
-					<resourcecount count="0" when="gt">
-						<fileset
-							dir="@{module.web.dir}"
-							excludes="**/custom_jsps/**/*,**/dependencies/**/*"
-							includes="docroot/**/*.jsp,src/META-INF/resources/**/*.jsp,tmp/**/*.jsp"
-						/>
-					</resourcecount>
-					<then>
-						<ant antfile="@{module.web.dir}/build.xml" dir="@{module.web.dir}" target="compile-jsp" />
-					</then>
-				</if>
+				<ant antfile="@{module.web.dir}/build.xml" dir="@{module.web.dir}" target="compile-jsp" />
 			</sequential>
 		</for>
 	</target>
